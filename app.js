@@ -1,13 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const app = express();
+const UserRoutes = require('./routes/user');
 
 mongoose.connect('mongodb+srv://kwaay:RCptiDpAszhEbEaO@p6-piiquante.jwozi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('✅ Connexion à MongoDB '))
   .catch(() => console.log('❌ Connexion à MongoDB '));
+
+const app = express();
 
 app.use((req, res, next) => {
 res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,7 +19,5 @@ next();
 });
 app.use(express.json());
 
-app.use((req,res) => {
-    res.json({ message : "Votre requête a bien été reçue"})
-})
+app.use('/api/auth', UserRoutes)
 module.exports = app;
