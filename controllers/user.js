@@ -7,7 +7,7 @@ const regexEmail = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gm;
 const regexPassword = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/gm;
 
 exports.signup = async (req,res,next) => {
-    const emailExist = User.findOne({ email: req.body.email })
+    const emailExist = await User.findOne({ email: req.body.email })
     if (emailExist) {
         return res.status(400).json({ error: 'Email déjà utilisé'});
     }
