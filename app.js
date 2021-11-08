@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
+const path = require('path');
 
 const UserRoutes = require('./routes/user');
 const SauceRoutes = require ('./routes/sauce')
@@ -20,6 +20,8 @@ res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OP
 next();
 });
 app.use(express.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/auth', UserRoutes)
 app.use('/api/sauces', SauceRoutes)
