@@ -1,6 +1,7 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
 const fsp = require('fs/promises');
+const { deleteOne } = require('../models/sauce');
 
 exports.getAllSauces = async (_req, res) => {
     try {
@@ -46,7 +47,7 @@ exports.createSauce = async (req, res) => {
 
 
 exports.modifySauce = async (req,res) => {
-    // try {
+    try {
         let sauceObject = {}
         if(req.file) {
             sauceObject = {
@@ -64,14 +65,26 @@ exports.modifySauce = async (req,res) => {
         if (updateSauce) {
             return res.status(200).json({ message : 'Objet modifié !'})
         }
-    //}
-    //catch (error) {
-    //    res.status(400).json({error})
-    //}
+    }
+    catch (error) {
+        res.status(400).json({error})
+    }
 };
 
-exports.deleteSauce = (req, res) => {
-    
+exports.deleteSauce = async (req, res) => {  
+    const sauce = await Sauce.findOne({ _id: req.params.id })
+    .catch (() => {
+        res.status(404).json({ message: 'Sauce non existante'})
+    });
+    const filename = sauce.imageUrl.split('/images/')[1];
+    await fsp.unlink('./images/' + filename)
+    const deleteSauce = await Sauce.deleteOne({_id: req.params.id})
+    .catch (() => {
+        res.status(400).json({error});
+    });
+    if(deleteSauce) {
+        return res.status(200).json({ message : 'Objet supprimé avec succès'}) 
+    }
 };
 
 exports.likeSauce = (req, res) => {
