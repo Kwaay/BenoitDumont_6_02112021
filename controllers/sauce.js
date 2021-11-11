@@ -1,5 +1,6 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
+const fsp = require('fs/promises');
 
 exports.getAllSauces = async (_req, res) => {
     try {
@@ -45,21 +46,28 @@ exports.createSauce = async (req, res) => {
 
 
 exports.modifySauce = async (req,res) => {
-    try {
-        const sauceObject = req.file ?
-        {
-            ...JSON.parse(req.body.sauce),
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        } : { ...req.body}
-        console.log(sauceObject);
+    // try {
+        let sauceObject = {}
+        if(req.file) {
+            sauceObject = {
+                ...JSON.parse(req.body.sauce),
+                imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+            }
+            const sauce = await Sauce.findOne({ _id: req.params.id })
+            const filename = sauce.imageUrl.split('/images/')[1];
+            await fsp.unlink('./images/' + filename)
+        }
+        else {
+           sauceObject = { ...req.body }
+        }
         const updateSauce = await Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id : req.params.id })
         if (updateSauce) {
             return res.status(200).json({ message : 'Objet modifié !'})
         }
-    }
-    catch (error) {
-        res.status(400).json({message: 'Erreur de modification'})
-    }
+    //}
+    //catch (error) {
+    //    res.status(400).json({error})
+    //}
 };
 
 exports.deleteSauce = (req, res) => {
