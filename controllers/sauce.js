@@ -94,7 +94,7 @@ exports.likeSauce = async (req, res) => {
         const userId = req.body.userId;
         if (action === 1) {
             if(sauce.usersLiked.includes(userId) || sauce.usersDisliked.includes(userId)) {
-                return res.status(409).json({error})
+                return res.status(409).json({error});
             }
             else {
                 const setLike = await Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: +1 }, $push: { usersLiked: userId } })
@@ -105,7 +105,7 @@ exports.likeSauce = async (req, res) => {
         }
         else if (action === -1) {
             if(sauce.usersDisliked.includes(userId) || sauce.usersLiked.includes(userId)) {
-                return res.status(409).json({error})
+                return res.status(409).json({error});
             }
             else {
                 const setDislike = await Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: +1 }, $push: { usersDisliked: userId } })
@@ -126,6 +126,9 @@ exports.likeSauce = async (req, res) => {
                 if(deleteDislike) {
                     return res.status(200).json({message: 'Dislike supprimé'})
                 }
+            }
+            if (action === 0) {
+                return res.status(409).json({message: "La suppression du vide, ce n'est pas bien"});
             }
         }   
     }
