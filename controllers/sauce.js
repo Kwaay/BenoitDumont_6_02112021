@@ -1,7 +1,5 @@
 const Sauce = require('../models/sauce');
-const fs = require('fs');
 const fsp = require('fs/promises');
-const { deleteOne } = require('../models/sauce');
 
 exports.getAllSauces = async (_req, res) => {
     try {
@@ -97,6 +95,7 @@ exports.likeSauce = async (req, res) => {
                 return res.status(409).json({error});
             }
             else {
+            
                 const setLike = await Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: +1 }, $push: { usersLiked: userId } })
                 if (setLike) {
                     return res.status(200).json({message:'Like ajouté'});
@@ -108,6 +107,7 @@ exports.likeSauce = async (req, res) => {
                 return res.status(409).json({error});
             }
             else {
+            
                 const setDislike = await Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: +1 }, $push: { usersDisliked: userId } })
                 if (setDislike) {
                     return res.status(200).json({message: 'Dislike ajouté'});

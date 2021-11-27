@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+require('dotenv').config();
 
 const UserRoutes = require('./routes/user');
 const SauceRoutes = require ('./routes/sauce')
 
-mongoose.connect('mongodb+srv://kwaay:RCptiDpAszhEbEaO@p6-piiquante.jwozi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@p6-piiquante.jwozi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('✅ Connexion à MongoDB '))
